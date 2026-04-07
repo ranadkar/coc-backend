@@ -37,12 +37,13 @@ class BattleLogRepository:
                 PRIMARY KEY (player_tag, battle_hash)
             );
 
+            DROP INDEX IF EXISTS idx_tracked_battles_player_category_recency;
             CREATE INDEX IF NOT EXISTS idx_tracked_battles_player_category_recency
             ON tracked_battles (
                 player_tag,
                 category,
                 first_seen_at DESC,
-                first_seen_order ASC
+                first_seen_order DESC
             );
             """
         )
@@ -125,7 +126,7 @@ class BattleLogRepository:
                           FROM tracked_battles
                           WHERE player_tag = ?
                             AND category = ?
-                          ORDER BY first_seen_at DESC, first_seen_order ASC
+                          ORDER BY first_seen_at DESC, first_seen_order DESC
                           LIMIT ?
                       )
                     """,
@@ -153,7 +154,7 @@ class BattleLogRepository:
                     battle_json
                 FROM tracked_battles
                 WHERE player_tag = ?
-                ORDER BY category, first_seen_at DESC, first_seen_order ASC
+                ORDER BY category, first_seen_at ASC, first_seen_order ASC
                 """,
                 (normalized_tag,),
             ).fetchall()
