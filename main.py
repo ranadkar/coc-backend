@@ -11,8 +11,11 @@ COC_API_BASE_URL = "https://api.clashofclans.com/v1"
 TRACKED_BATTLE_LOG_TAGS = [
     "PPOLJLR2Y",  # Austin
     "PP2UOUPC",  # Bob
+    "LU9VGCPUY", # Kevin
+    "YVGCLY9U9", # BSE
+    "GUQ22PC2L", # wuzhen
 ]
-BATTLE_LOG_SYNC_INTERVAL_SECONDS = 300
+BATTLE_LOG_SYNC_INTERVAL_SECONDS = 60 * 60
 BATTLE_LOG_CATEGORY_LIMIT = 50
 BATTLE_LOG_DB_PATH = Path("battle_logs.sqlite3")
 
