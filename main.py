@@ -9,8 +9,8 @@ COC_API_BASE_URL = "https://api.clashofclans.com/v1"
 
 # Battle log polling config for the tracked players.
 TRACKED_BATTLE_LOG_TAGS = [
-    "PPOLJLR2Y", # Austin
-    "PP2UOUPC", # Bob
+    "PPOLJLR2Y",  # Austin
+    "PP2UOUPC",  # Bob
 ]
 BATTLE_LOG_SYNC_INTERVAL_SECONDS = 300
 BATTLE_LOG_CATEGORY_LIMIT = 50
@@ -30,11 +30,21 @@ app_config = AppConfig(
 app = create_app(app_config)
 
 
+# def main() -> None:
+#     uvicorn.run(
+#         "main:app",
+#         host="0.0.0.0",
+#         port=8080,
+#     )
+
+
 def main() -> None:
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8080,
+        port=443,
+        ssl_keyfile="key.pem",
+        ssl_certfile="cert.pem",
     )
 
 
