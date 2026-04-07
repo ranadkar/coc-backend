@@ -1,0 +1,9 @@
+.codex
+venv/
+__pycache__/
+file-maps/
+*.json
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+.env
