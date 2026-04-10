@@ -64,10 +64,9 @@ def normalize_battle_view(
         },
     }
 
-    normalized_observed_at = _safe_str(
-        battle.get("observedAt"),
-        observed_at or "",
-    )
+    normalized_observed_at = _safe_str(observed_at)
+    if not normalized_observed_at:
+        normalized_observed_at = _safe_str(battle.get("observedAt"))
     if normalized_observed_at:
         normalized_battle["observedAt"] = normalized_observed_at
 

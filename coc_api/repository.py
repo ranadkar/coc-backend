@@ -84,6 +84,9 @@ class BattleLogRepository:
                     if not isinstance(battle, dict):
                         continue
 
+                    stored_battle = dict(battle)
+                    stored_battle.pop("observedAt", None)
+
                     connection.execute(
                         """
                         INSERT INTO tracked_battles (
@@ -106,7 +109,7 @@ class BattleLogRepository:
                             str(battle.get("hash", "")),
                             category,
                             json.dumps(
-                                battle,
+                                stored_battle,
                                 separators=(",", ":"),
                                 ensure_ascii=False,
                             ),
