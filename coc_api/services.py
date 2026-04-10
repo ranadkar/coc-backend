@@ -35,8 +35,9 @@ class BattleLogService:
         return self.repository.get_stored_battle_log(tag)
 
     async def get_live_battle_log(self, tag: str) -> BattleBuckets:
+        fetched_at = datetime.now(timezone.utc).isoformat()
         battle_log_data = await self.client.fetch_battle_log(tag)
-        return parse_battle_log(battle_log_data)
+        return parse_battle_log(battle_log_data, observed_at=fetched_at)
 
     async def get_or_sync_stored_battle_log(self, tag: str) -> BattleBuckets:
         normalized_tag = normalize_player_tag(tag)
@@ -52,9 +53,9 @@ class BattleLogService:
 
     async def sync_once(self, tag: str) -> dict[str, object]:
         normalized_tag = normalize_player_tag(tag)
-        battle_log_data = await self.client.fetch_battle_log(normalized_tag)
-        parsed_battles = parse_battle_log(battle_log_data)
         seen_at = datetime.now(timezone.utc).isoformat()
+        battle_log_data = await self.client.fetch_battle_log(normalized_tag)
+        parsed_battles = parse_battle_log(battle_log_data, observed_at=seen_at)
         is_tracked = normalized_tag in self.tracked_tags
 
         if is_tracked:

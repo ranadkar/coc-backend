@@ -151,7 +151,8 @@ class BattleLogRepository:
                 SELECT
                     category,
                     battle_hash,
-                    battle_json
+                    battle_json,
+                    first_seen_at
                 FROM tracked_battles
                 WHERE player_tag = ?
                 ORDER BY category, first_seen_at ASC, first_seen_order ASC
@@ -165,7 +166,11 @@ class BattleLogRepository:
                 continue
 
             buckets[category].append(
-                parse_stored_battle(row["battle_json"], row["battle_hash"])
+                parse_stored_battle(
+                    row["battle_json"],
+                    row["battle_hash"],
+                    observed_at=row["first_seen_at"],
+                )
             )
 
         return buckets

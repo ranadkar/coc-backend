@@ -45,12 +45,13 @@ def _safe_int(value: Any, default: int = 0) -> int:
 def normalize_battle_view(
     battle: dict[str, Any],
     fallback_hash: str | None = None,
+    observed_at: str | None = None,
 ) -> dict[str, Any]:
     looted = battle.get("looted")
     if not isinstance(looted, dict):
         looted = {}
 
-    return {
+    normalized_battle = {
         "hash": _safe_str(battle.get("hash"), fallback_hash or ""),
         "opponent": _safe_str(battle.get("opponent")),
         "stars": _safe_int(battle.get("stars")),
@@ -62,6 +63,15 @@ def normalize_battle_view(
             "dark": _safe_int(looted.get("dark")),
         },
     }
+
+    normalized_observed_at = _safe_str(
+        battle.get("observedAt"),
+        observed_at or "",
+    )
+    if normalized_observed_at:
+        normalized_battle["observedAt"] = normalized_observed_at
+
+    return normalized_battle
 
 
 def get_battle_category(battle_obj: dict[str, Any]) -> str | None:
@@ -80,6 +90,7 @@ def get_battle_category(battle_obj: dict[str, Any]) -> str | None:
 def build_battle_view(
     battle_obj: dict[str, Any],
     fallback_hash: str | None = None,
+    observed_at: str | None = None,
 ) -> dict[str, Any]:
     army_share_code = battle_obj.get("armyShareCode")
 
@@ -95,7 +106,7 @@ def build_battle_view(
         elif resource.get("name") == "DarkElixir":
             looted["dark"] = _safe_int(resource.get("amount"))
 
-    return {
+    battle_view = {
         "hash": fallback_hash or dict_hash(battle_obj),
         "opponent": _safe_str(battle_obj.get("opponentPlayerTag")),
         "stars": _safe_int(battle_obj.get("stars")),
@@ -104,16 +115,33 @@ def build_battle_view(
         "looted": looted,
     }
 
+    normalized_observed_at = _safe_str(observed_at)
+    if normalized_observed_at:
+        battle_view["observedAt"] = normalized_observed_at
 
-def parse_stored_battle(battle_json: str, fallback_hash: str) -> dict[str, Any]:
+    return battle_view
+
+
+def parse_stored_battle(
+    battle_json: str,
+    fallback_hash: str,
+    observed_at: str | None = None,
+) -> dict[str, Any]:
     stored_payload = json.loads(battle_json)
     if not isinstance(stored_payload, dict):
         stored_payload = {}
 
-    return normalize_battle_view(stored_payload, fallback_hash=fallback_hash)
+    return normalize_battle_view(
+        stored_payload,
+        fallback_hash=fallback_hash,
+        observed_at=observed_at,
+    )
 
 
-def parse_battle_log(battle_log_data: dict[str, Any]) -> BattleBuckets:
+def parse_battle_log(
+    battle_log_data: dict[str, Any],
+    observed_at: str | None = None,
+) -> BattleBuckets:
     battle_log = battle_log_data.get("items", [])
     buckets = empty_battle_buckets()
 
@@ -125,6 +153,11 @@ def parse_battle_log(battle_log_data: dict[str, Any]) -> BattleBuckets:
         if category is None:
             continue
 
-        buckets[category].append(build_battle_view(battle_obj))
+        buckets[category].append(
+            build_battle_view(
+                battle_obj,
+                observed_at=observed_at,
+            )
+        )
 
     return buckets
