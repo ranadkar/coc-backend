@@ -6,7 +6,7 @@ from fastapi import HTTPException
 
 
 def normalize_player_tag(tag: str) -> str:
-    stripped = tag.strip().lstrip("#").upper()
+    stripped = tag.strip().lstrip("#").upper().replace("0", "O")
     if not stripped:
         raise HTTPException(status_code=400, detail="Player tag cannot be empty.")
     return f"#{stripped}"
