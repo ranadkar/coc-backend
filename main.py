@@ -25,6 +25,7 @@ TRACKED_BATTLE_LOG_TAGS = [
     "GYUUO8OVV", # yeowunnn
     "98OCPPRG",  # starkiller
     "ROJLOVQUO", # sun tzu
+    "ROUL8P8LJ", # ser7ndipity
 ]
 BATTLE_LOG_SYNC_INTERVAL_SECONDS = 60 * 30
 BATTLE_LOG_CATEGORY_LIMIT = 50
